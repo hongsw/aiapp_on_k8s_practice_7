@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  # 일반적인 설정 값들
+  environment: "production"
+  log_level: "info"
+  max_connections: "100"
+  cache_timeout: "300"
+  database_host: "database-service"
+  database_port: "5432"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-files
+data:
+  # 설정 파일 내용
+  config.properties: |
+    app.name=AI Summarizer
+    app.version=1.0.0
+    api.port=8080
+    api.host=0.0.0.0
+    security.enabled=true

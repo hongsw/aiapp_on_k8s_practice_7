@@ -1,0 +1,44 @@
+# Markdown files (except README.md)
+*.md
+!README.md
+
+# Log files
+log.txt
+log_improved.txt
+
+# Content files
+content.md
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.env
+
+# OS files
+.DS_Store
+.Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.backup
+*.bak
+
+# Docker files (if needed for local testing)
+# Dockerfile
+# requirements.txt
+
+# Node.js (for any frontend build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
