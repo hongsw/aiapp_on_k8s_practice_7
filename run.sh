@@ -117,7 +117,7 @@ spec:
   containers:
   - name: test-container
     image: busybox
-    command: ['sh', '-c', 'echo "환경 변수 확인:"; echo "ENVIRONMENT=\$environment"; echo "LOG_LEVEL=\$log_level"; echo "DATABASE_HOST=\$database_host"; sleep 10']
+    command: ['sh', '-c', 'echo "환경 변수 확인:"; echo "ENVIRONMENT=\$ENVIRONMENT"; echo "LOG_LEVEL=\$LOG_LEVEL"; echo "DATABASE_HOST=\$DATABASE_HOST"; sleep 10']
     envFrom:
     - configMapRef:
         name: app-config
@@ -229,7 +229,46 @@ else
 fi
 echo
 
-echo "Step 6: 보안 고려사항"
+echo "Step 6: 새로운 테스트 Pod 파일들 확인"
+echo "추가된 실습용 YAML 파일들"
+echo "----------------------------------------"
+echo "📄 새로 생성된 테스트 파일들:"
+echo "   - test-configmap-pod.yaml: ConfigMap 환경 변수 주입 예제"
+echo "   - test-secret-pod.yaml: Secret 환경 변수 주입 예제"
+echo "   - test-volume-mount-pod.yaml: ConfigMap 볼륨 마운트 예제"
+echo
+
+if [ $CLUSTER_UP -eq 1 ]; then
+    echo "테스트 Pod들 실행해보기..."
+
+    # ConfigMap 테스트 Pod 실행
+    if [ -f "test-configmap-pod.yaml" ]; then
+        echo "ConfigMap 테스트 Pod 실행 중..."
+        kubectl apply -f test-configmap-pod.yaml 2>/dev/null
+        sleep 3
+        kubectl logs configmap-test-pod 2>/dev/null || echo "   ConfigMap Pod 로그 조회 실패"
+        kubectl delete -f test-configmap-pod.yaml --ignore-not-found=true 2>/dev/null
+    fi
+
+    # Secret 테스트 Pod 실행
+    if [ -f "test-secret-pod.yaml" ]; then
+        echo "Secret 테스트 Pod 실행 중..."
+        kubectl apply -f test-secret-pod.yaml 2>/dev/null
+        sleep 3
+        kubectl logs secret-test-pod 2>/dev/null || echo "   Secret Pod 로그 조회 실패"
+        kubectl delete -f test-secret-pod.yaml --ignore-not-found=true 2>/dev/null
+    fi
+
+    echo "볼륨 마운트 테스트는 별도 ConfigMap이 필요하므로 생략..."
+else
+    echo "시뮬레이션: 테스트 Pod들 실행"
+    echo "   test-configmap-pod.yaml -> Environment Variables 출력"
+    echo "   test-secret-pod.yaml -> Secret 환경 변수 확인"
+    echo "   test-volume-mount-pod.yaml -> 볼륨 마운트 파일 확인"
+fi
+echo
+
+echo "Step 7: 보안 고려사항"
 echo "슬라이드 8 참고: Secret 보호"
 echo "----------------------------------------"
 echo "⚠️ 중요 보안 사항:"
@@ -254,7 +293,7 @@ else
 fi
 echo
 
-echo "Step 7: 정리 (Cleanup)"
+echo "Step 8: 정리 (Cleanup)"
 echo "슬라이드 9 참고: 리소스 정리"
 echo "----------------------------------------"
 if [ $CLUSTER_UP -eq 1 ]; then

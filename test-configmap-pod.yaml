@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-test-pod
+spec:
+  containers:
+  - name: test-container
+    image: busybox
+    command: ['sh', '-c', 'echo "Environment Variables:"; env | grep -E "(ENVIRONMENT|LOG_LEVEL|DATABASE)"; sleep 60']
+    envFrom:
+    - configMapRef:
+        name: app-config  # ConfigMap 전체를 환경 변수로 주입
+  restartPolicy: Never

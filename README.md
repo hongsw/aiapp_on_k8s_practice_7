@@ -40,12 +40,20 @@ kubectl get secret app-secret -o 'go-template={{index .data "username"}}' | base
 
 ### 3. Pod에서 ConfigMap과 Secret 사용
 ```bash
-# 환경 변수로 설정 사용
-kubectl run test-pod --image=busybox --env-from=configmap/app-config --env-from=secret/app-secret
+# ConfigMap 테스트 Pod 생성 (환경 변수로 주입)
+kubectl apply -f test-configmap-pod.yaml
+kubectl logs configmap-test-pod
 
-# 볼륨으로 파일로 마운트
-kubectl create configmap my-config-file --from-file=config.properties
-kubectl run nginx-pod --image=nginx --volume-mount='name=config-vol,mountPath=/etc/config' --volume='name=config-vol,configMap=default/my-config-file' --dry-run=client -o yaml > pod-with-config.yaml
+# Secret 테스트 Pod 생성 (환경 변수로 주입)
+kubectl apply -f test-secret-pod.yaml
+kubectl logs secret-test-pod
+
+# 볼륨 마운트 테스트 Pod 생성
+kubectl apply -f test-volume-mount-pod.yaml
+kubectl exec volume-test-pod -- ls /etc/config
+
+# 테스트 Pod들 정리
+kubectl delete pod configmap-test-pod secret-test-pod volume-test-pod
 ```
 
 ### 4. 보안 고려사항
@@ -72,6 +80,15 @@ kubectl delete pods --all
 ## 실습 완료 체크리스트
 - [ ] ConfigMap 생성 및 조회
 - [ ] Secret 생성 및 안전한 저장 확인
-- [ ] Pod에서 환경 변수 주입 테스트
-- [ ] 볼륨 마운트로 파일 설정 사용
+- [ ] Pod에서 환경 변수 주입 테스트 (test-configmap-pod.yaml, test-secret-pod.yaml)
+- [ ] 볼륨 마운트로 파일 설정 사용 (test-volume-mount-pod.yaml)
 - [ ] 보안 측면 이해 및 올바른 사용 습득
+
+## 추가된 실습 파일
+- `test-configmap-pod.yaml`: ConfigMap을 환경 변수로 주입하는 Pod 예제
+- `test-secret-pod.yaml`: Secret을 환경 변수로 주입하는 Pod 예제
+- `test-volume-mount-pod.yaml`: ConfigMap을 볼륨으로 마운트하는 Pod 예제
+
+## 변경사항
+- ConfigMap 설정값들이 대문자 형태로 변경됨 (ENVIRONMENT, LOG_LEVEL 등)
+- Secret에 stringData 섹션 추가로 평문 데이터 입력 방식 제공

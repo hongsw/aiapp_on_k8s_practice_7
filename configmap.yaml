@@ -4,12 +4,12 @@ metadata:
   name: app-config
 data:
   # 일반적인 설정 값들
-  environment: "production"
-  log_level: "info"
-  max_connections: "100"
-  cache_timeout: "300"
-  database_host: "database-service"
-  database_port: "5432"
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
+  MAX_CONNECTIONS: "100"
+  CACHE_TIMEOUT: "300"
+  DATABASE_HOST: "database-service"
+  DATABASE_PORT: "5432"
 ---
 apiVersion: v1
 kind: ConfigMap
